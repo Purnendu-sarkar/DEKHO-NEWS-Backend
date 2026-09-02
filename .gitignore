@@ -1,0 +1,18 @@
+node_modules/
+dist/
+build/
+scratch/
+uploads/
+
+# Keep environment variables out of version control
+.env
+.env.*
+
+# Generated files
+/generated/prisma
+coverage/
+*.tsbuildinfo
+
+# OS / Logs
+.DS_Store
+*.log

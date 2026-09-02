@@ -1,0 +1,228 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  USER
+  ADMIN
+  SUPER_ADMIN
+  MODERATOR
+}
+
+enum TwoFactorMethod {
+  SMS
+  AUTHENTICATOR
+}
+
+enum NewsType {
+  VIDEO
+  SHORT
+  PHOTO
+  READ
+}
+
+enum ContentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum AdStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  ACTIVE
+  EXPIRED
+}
+
+model User {
+  id              String           @id @default(cuid())
+  phone           String?          @unique
+  email           String?          @unique
+  password        String?
+  role            Role             @default(USER)
+  twoFactorSecret String?
+  twoFactorMethod TwoFactorMethod?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  profile        Profile?
+  news           News[]
+  notifications  Notification[]
+  ads            Advertisement[]
+  auditLogs      AuditLog[]
+  sessions       Session[]
+  socialAccounts SocialAccount[]
+}
+
+model Profile {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  name      String?
+  username  String?  @unique
+  bio       String?
+  location  String?
+  photoUrl  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Category {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  news News[]
+}
+
+model News {
+  id              String        @id @default(cuid())
+  title           String
+  description     String?
+  type            NewsType
+  status          ContentStatus @default(PENDING)
+  videoUrl        String?
+  photoUrl        String?
+  thumbnailUrl    String?
+  additionalPhotos String[]
+  viewCount       Int           @default(0)
+  likeCount       Int           @default(0)
+  shareCount      Int           @default(0)
+  tags            String[]
+  subCategory     String?
+  location        String?
+  newsDate        DateTime?
+  rejectionReason String?
+  adminComment    String?
+  externalId      String?       @unique // e.g. youtube video id or facebook post id
+  source          String        @default("INTERNAL") // INTERNAL, YOUTUBE, FACEBOOK
+
+  authorId   String
+  categoryId String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  author   User     @relation(fields: [authorId], references: [id])
+  category Category @relation(fields: [categoryId], references: [id])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  adminId   String
+  action    String // e.g. "APPROVED_NEWS", "REJECTED_AD"
+  targetId  String // e.g. the ID of the news or ad
+  details   String?
+  createdAt DateTime @default(now())
+
+  admin User @relation(fields: [adminId], references: [id])
+}
+
+model AdPlan {
+  id           String   @id @default(cuid())
+  name         String
+  price        Float
+  durationDays Int
+  type         String // e.g. "IMAGE", "VIDEO"
+  createdAt    DateTime @default(now())
+
+  advertisements Advertisement[]
+}
+
+model Advertisement {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  mediaUrl    String
+  ctaText     String?
+  targetUrl   String?
+  status      AdStatus  @default(PENDING)
+  startDate   DateTime?
+  endDate     DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  authorId String
+  planId   String
+
+  author User   @relation(fields: [authorId], references: [id])
+  plan   AdPlan @relation(fields: [planId], references: [id])
+}
+
+model SocialAccount {
+  id           String   @id @default(cuid())
+  userId       String
+  provider     String // YOUTUBE, FACEBOOK
+  accountId    String // channel ID or page ID
+  channelName  String
+  accessToken  String
+  refreshToken String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Otp {
+  id        String   @id @default(cuid())
+  phone     String
+  hash      String
+  expiresAt DateTime
+  attempts  Int      @default(0)
+  isUsed    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([phone])
+}
+
+model Session {
+  id               String   @id @default(cuid())
+  userId           String
+  refreshTokenHash String
+  expiresAt        DateTime
+  device           String?
+  ip               String?
+  isRevoked        Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AppConfig {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model StaticContent {
+  id        String   @id @default(cuid())
+  type      String   @unique // TERMS, PRIVACY, ABOUT
+  content   String
+  updatedAt DateTime @updatedAt
+}
