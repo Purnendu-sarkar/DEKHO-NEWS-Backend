@@ -8,6 +8,9 @@ uploads/
 .env
 .env.*
 
+*.pem
+
+
 # Generated files
 /generated/prisma
 coverage/
