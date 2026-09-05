@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { prisma } from '../../lib/prisma';
-import { NewsType } from '../../generated/prisma';
+import { NewsType } from '../../generated/prisma/client';
 import { AuthRequest } from '../../middleware/auth.middleware';
 import { checkForSpam } from '../../services/moderation.service';
 import { uploadFileToS3, s3Client, BUCKET_NAME } from '../../services/s3.service';

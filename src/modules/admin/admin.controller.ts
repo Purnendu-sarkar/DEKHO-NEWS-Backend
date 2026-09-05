@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { prisma } from '../../lib/prisma';
-import { ContentStatus, AdStatus } from '../../generated/prisma';
+import { ContentStatus, AdStatus } from '../../generated/prisma/client';
 import { AuthRequest } from '../../middleware/auth.middleware';
 import { GetObjectCommand } from '@aws-sdk/client-s3';
 import { s3Client, BUCKET_NAME, getPresignedUrl } from '../../services/s3.service';

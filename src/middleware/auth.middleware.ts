@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { Role } from '../generated/prisma';
+import { Role } from '../generated/prisma/client';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'super-secret-key-dekho-news';
 

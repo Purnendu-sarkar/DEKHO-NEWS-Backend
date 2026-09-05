@@ -2,7 +2,7 @@ import cron from 'node-cron';
 import { prisma } from '../lib/prisma';
 import { fetchLatestYouTubeVideos } from './youtube.service';
 import { fetchLatestFacebookPosts } from './facebook.service';
-import { NewsType } from '../generated/prisma';
+import { NewsType } from '../generated/prisma/client';
 
 export const startCronJobs = () => {
   // Run every 10 minutes (for MVP simulation, normally every 1-3 hours)
