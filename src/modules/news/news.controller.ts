@@ -26,10 +26,18 @@ export const getCategories = async (req: Request, res: Response): Promise<void> 
 
 export const getFeed = async (req: Request, res: Response): Promise<void> => {
   try {
+    const typeParam = req.query.type as string;
+    let typeFilter: any = { in: ['VIDEO', 'PHOTO', 'READ'] };
+    
+    if (typeParam === 'Videos') typeFilter = 'VIDEO';
+    else if (typeParam === 'Photos') typeFilter = 'PHOTO';
+    else if (typeParam === 'Read') typeFilter = 'READ';
+    else if (typeParam) typeFilter = typeParam; // Fallback for raw enum string
+
     const news = await prisma.news.findMany({
       where: {
         status: 'APPROVED',
-        type: { in: ['VIDEO', 'PHOTO', 'READ'] }
+        type: typeFilter
       },
       include: {
         author: { select: { id: true, profile: { select: { name: true, photoUrl: true } } } },
