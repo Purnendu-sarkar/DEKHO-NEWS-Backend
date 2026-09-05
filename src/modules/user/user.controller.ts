@@ -149,8 +149,8 @@ export const updateProfile = async (req: AuthRequest, res: Response): Promise<vo
 
 export const toggleFollow = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const followerId = req.user?.userId;
-    const { id: followingId } = req.params;
+    const followerId = req.user?.userId as string;
+    const followingId = req.params.id as string;
 
     if (!followerId) {
       res.status(401).json({ success: false, message: 'Unauthorized' });

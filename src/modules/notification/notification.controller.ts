@@ -18,8 +18,8 @@ export const getMyNotifications = async (req: AuthRequest, res: Response): Promi
 
 export const markAsRead = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
-    const userId = req.user?.userId;
+    const id = req.params.id as string;
+    const userId = req.user?.userId as string;
 
     const notification = await prisma.notification.update({
       where: { id, userId }, // Ensure user owns the notification

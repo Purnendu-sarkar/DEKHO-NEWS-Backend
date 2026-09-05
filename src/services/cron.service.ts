@@ -30,7 +30,7 @@ export const startCronJobs = () => {
       // Also need a default category for imported news
       let defaultCategory = await prisma.category.findFirst({ where: { name: 'Auto-Imported' } });
       if (!defaultCategory) {
-        defaultCategory = await prisma.category.create({ data: { name: 'Auto-Imported', description: 'Automatically imported from social media' } });
+        defaultCategory = await prisma.category.create({ data: { name: 'Auto-Imported' } });
       }
 
       for (const account of accounts) {
