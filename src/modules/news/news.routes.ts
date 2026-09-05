@@ -1,15 +1,36 @@
 import { Router } from 'express';
-import { getFeed, getShorts, createNews, getMyContent, getRecommendedNews, getCategories } from './news.controller';
+import {
+  getFeed,
+  getRecommendedNews,
+  getShorts,
+  createNews,
+  getMyContent,
+  getCategories,
+  streamVideo,
+  toggleLike,
+  incrementView,
+  getComments,
+  addComment
+} from './news.controller';
 import { authenticate } from '../../middleware/auth.middleware';
 import { upload } from '../../middleware/upload.middleware';
 
 const router = Router();
+
+// Stream endpoint (public)
+router.use('/stream', streamVideo);
 
 // Feed endpoints
 router.get('/feed', getFeed);
 router.get('/shorts', getShorts);
 router.get('/recommended', getRecommendedNews);
 router.get('/categories', getCategories);
+
+// Social Interactions
+router.post('/:id/like', authenticate, toggleLike);
+router.post('/:id/view', incrementView); // public
+router.get('/:id/comments', getComments); // public
+router.post('/:id/comments', authenticate, addComment);
 
 // Publisher endpoints
 router.get('/my-content', authenticate, getMyContent);

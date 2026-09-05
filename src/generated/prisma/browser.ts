@@ -82,3 +82,18 @@ export type AppConfig = Prisma.AppConfigModel
  * 
  */
 export type StaticContent = Prisma.StaticContentModel
+/**
+ * Model Like
+ * 
+ */
+export type Like = Prisma.LikeModel
+/**
+ * Model Comment
+ * 
+ */
+export type Comment = Prisma.CommentModel
+/**
+ * Model Follow
+ * 
+ */
+export type Follow = Prisma.FollowModel

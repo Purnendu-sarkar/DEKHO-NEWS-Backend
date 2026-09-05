@@ -63,7 +63,10 @@ export const ModelName = {
   Otp: 'Otp',
   Session: 'Session',
   AppConfig: 'AppConfig',
-  StaticContent: 'StaticContent'
+  StaticContent: 'StaticContent',
+  Like: 'Like',
+  Comment: 'Comment',
+  Follow: 'Follow'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -271,6 +274,39 @@ export const StaticContentScalarFieldEnum = {
 } as const
 
 export type StaticContentScalarFieldEnum = (typeof StaticContentScalarFieldEnum)[keyof typeof StaticContentScalarFieldEnum]
+
+
+export const LikeScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  newsId: 'newsId',
+  createdAt: 'createdAt'
+} as const
+
+export type LikeScalarFieldEnum = (typeof LikeScalarFieldEnum)[keyof typeof LikeScalarFieldEnum]
+
+
+export const CommentScalarFieldEnum = {
+  id: 'id',
+  text: 'text',
+  userId: 'userId',
+  newsId: 'newsId',
+  parentId: 'parentId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CommentScalarFieldEnum = (typeof CommentScalarFieldEnum)[keyof typeof CommentScalarFieldEnum]
+
+
+export const FollowScalarFieldEnum = {
+  id: 'id',
+  followerId: 'followerId',
+  followingId: 'followingId',
+  createdAt: 'createdAt'
+} as const
+
+export type FollowScalarFieldEnum = (typeof FollowScalarFieldEnum)[keyof typeof FollowScalarFieldEnum]
 
 
 export const SortOrder = {

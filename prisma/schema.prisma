@@ -61,6 +61,11 @@ model User {
   auditLogs      AuditLog[]
   sessions       Session[]
   socialAccounts SocialAccount[]
+
+  likes          Like[]
+  comments       Comment[]
+  following      Follow[] @relation("Follower")
+  followers      Follow[] @relation("Following")
 }
 
 model Profile {
@@ -116,6 +121,9 @@ model News {
 
   author   User     @relation(fields: [authorId], references: [id])
   category Category @relation(fields: [categoryId], references: [id])
+
+  likes    Like[]
+  comments Comment[]
 }
 
 model Notification {
@@ -226,3 +234,43 @@ model StaticContent {
   content   String
   updatedAt DateTime @updatedAt
 }
+
+model Like {
+  id        String   @id @default(cuid())
+  userId    String
+  newsId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  news News @relation(fields: [newsId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, newsId])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  text      String
+  userId    String
+  newsId    String
+  parentId  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  news    News      @relation(fields: [newsId], references: [id], onDelete: Cascade)
+  parent  Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies Comment[] @relation("CommentReplies")
+}
+
+model Follow {
+  id          String   @id @default(cuid())
+  followerId  String
+  followingId String
+  createdAt   DateTime @default(now())
+
+  follower  User @relation("Follower", fields: [followerId], references: [id], onDelete: Cascade)
+  following User @relation("Following", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@unique([followerId, followingId])
+}
+

@@ -1,6 +1,6 @@
 import { Worker, Job } from 'bullmq';
 import { prisma } from './lib/prisma';
-import { generateHLS } from './utils/ffmpeg.util';
+import { generateHLS, generateThumbnail } from './utils/ffmpeg.util';
 import { uploadDirectoryToS3, getPresignedUrl } from './services/s3.service';
 import { GetObjectCommand } from '@aws-sdk/client-s3';
 import { s3Client, BUCKET_NAME } from './services/s3.service';
@@ -50,19 +50,25 @@ const videoWorker = new Worker('video-process', async (job: Job) => {
     console.log(`[WORKER] Generating HLS for News ID: ${newsId}...`);
     await generateHLS(inputVideoPath, outputDir);
 
+    // 2.5 Generate Thumbnail
+    console.log(`[WORKER] Generating Thumbnail for News ID: ${newsId}...`);
+    await generateThumbnail(inputVideoPath, outputDir, 'thumbnail.jpg');
+
     // 3. Upload the HLS directory to S3
     console.log(`[WORKER] Uploading HLS to S3 for News ID: ${newsId}...`);
     const s3Prefix = `videos/hls_${newsId}`;
     await uploadDirectoryToS3(outputDir, s3Prefix);
 
     const masterPlaylistUrl = `${s3Prefix}/master.m3u8`;
+    const thumbnailUrl = `${s3Prefix}/thumbnail.jpg`;
 
     // 4. Update the database
     await prisma.news.update({
       where: { id: newsId },
       data: { 
         status: 'PENDING',
-        videoUrl: masterPlaylistUrl 
+        videoUrl: masterPlaylistUrl,
+        thumbnailUrl: thumbnailUrl
       }
     });
 

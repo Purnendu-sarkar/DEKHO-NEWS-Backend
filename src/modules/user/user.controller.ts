@@ -146,3 +146,39 @@ export const updateProfile = async (req: AuthRequest, res: Response): Promise<vo
     res.status(500).json({ success: false, message: 'Internal server error' });
   }
 };
+
+export const toggleFollow = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const followerId = req.user?.userId;
+    const { id: followingId } = req.params;
+
+    if (!followerId) {
+      res.status(401).json({ success: false, message: 'Unauthorized' });
+      return;
+    }
+
+    if (followerId === followingId) {
+      res.status(400).json({ success: false, message: 'Cannot follow yourself' });
+      return;
+    }
+
+    const existingFollow = await prisma.follow.findUnique({
+      where: { followerId_followingId: { followerId, followingId } }
+    });
+
+    if (existingFollow) {
+      await prisma.follow.delete({
+        where: { followerId_followingId: { followerId, followingId } }
+      });
+      res.status(200).json({ success: true, message: 'Unfollowed', isFollowing: false });
+    } else {
+      await prisma.follow.create({
+        data: { followerId, followingId }
+      });
+      res.status(200).json({ success: true, message: 'Followed', isFollowing: true });
+    }
+  } catch (error) {
+    console.error('Error in toggleFollow:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};

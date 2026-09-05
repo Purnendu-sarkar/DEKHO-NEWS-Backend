@@ -370,6 +370,8 @@ export type NewsWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"News"> | Date | string
   author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   category?: Prisma.XOR<Prisma.CategoryScalarRelationFilter, Prisma.CategoryWhereInput>
+  likes?: Prisma.LikeListRelationFilter
+  comments?: Prisma.CommentListRelationFilter
 }
 
 export type NewsOrderByWithRelationInput = {
@@ -399,6 +401,8 @@ export type NewsOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   author?: Prisma.UserOrderByWithRelationInput
   category?: Prisma.CategoryOrderByWithRelationInput
+  likes?: Prisma.LikeOrderByRelationAggregateInput
+  comments?: Prisma.CommentOrderByRelationAggregateInput
 }
 
 export type NewsWhereUniqueInput = Prisma.AtLeast<{
@@ -431,6 +435,8 @@ export type NewsWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"News"> | Date | string
   author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   category?: Prisma.XOR<Prisma.CategoryScalarRelationFilter, Prisma.CategoryWhereInput>
+  likes?: Prisma.LikeListRelationFilter
+  comments?: Prisma.CommentListRelationFilter
 }, "id" | "externalId">
 
 export type NewsOrderByWithAggregationInput = {
@@ -520,6 +526,8 @@ export type NewsCreateInput = {
   updatedAt?: Date | string
   author: Prisma.UserCreateNestedOneWithoutNewsInput
   category: Prisma.CategoryCreateNestedOneWithoutNewsInput
+  likes?: Prisma.LikeCreateNestedManyWithoutNewsInput
+  comments?: Prisma.CommentCreateNestedManyWithoutNewsInput
 }
 
 export type NewsUncheckedCreateInput = {
@@ -547,6 +555,8 @@ export type NewsUncheckedCreateInput = {
   categoryId: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutNewsInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutNewsInput
 }
 
 export type NewsUpdateInput = {
@@ -574,6 +584,8 @@ export type NewsUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   author?: Prisma.UserUpdateOneRequiredWithoutNewsNestedInput
   category?: Prisma.CategoryUpdateOneRequiredWithoutNewsNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutNewsNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutNewsNestedInput
 }
 
 export type NewsUncheckedUpdateInput = {
@@ -601,6 +613,8 @@ export type NewsUncheckedUpdateInput = {
   categoryId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutNewsNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutNewsNestedInput
 }
 
 export type NewsCreateManyInput = {
@@ -789,6 +803,11 @@ export type NewsSumOrderByAggregateInput = {
   shareCount?: Prisma.SortOrder
 }
 
+export type NewsScalarRelationFilter = {
+  is?: Prisma.NewsWhereInput
+  isNot?: Prisma.NewsWhereInput
+}
+
 export type NewsCreateNestedManyWithoutAuthorInput = {
   create?: Prisma.XOR<Prisma.NewsCreateWithoutAuthorInput, Prisma.NewsUncheckedCreateWithoutAuthorInput> | Prisma.NewsCreateWithoutAuthorInput[] | Prisma.NewsUncheckedCreateWithoutAuthorInput[]
   connectOrCreate?: Prisma.NewsCreateOrConnectWithoutAuthorInput | Prisma.NewsCreateOrConnectWithoutAuthorInput[]
@@ -911,6 +930,34 @@ export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
 }
 
+export type NewsCreateNestedOneWithoutLikesInput = {
+  create?: Prisma.XOR<Prisma.NewsCreateWithoutLikesInput, Prisma.NewsUncheckedCreateWithoutLikesInput>
+  connectOrCreate?: Prisma.NewsCreateOrConnectWithoutLikesInput
+  connect?: Prisma.NewsWhereUniqueInput
+}
+
+export type NewsUpdateOneRequiredWithoutLikesNestedInput = {
+  create?: Prisma.XOR<Prisma.NewsCreateWithoutLikesInput, Prisma.NewsUncheckedCreateWithoutLikesInput>
+  connectOrCreate?: Prisma.NewsCreateOrConnectWithoutLikesInput
+  upsert?: Prisma.NewsUpsertWithoutLikesInput
+  connect?: Prisma.NewsWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.NewsUpdateToOneWithWhereWithoutLikesInput, Prisma.NewsUpdateWithoutLikesInput>, Prisma.NewsUncheckedUpdateWithoutLikesInput>
+}
+
+export type NewsCreateNestedOneWithoutCommentsInput = {
+  create?: Prisma.XOR<Prisma.NewsCreateWithoutCommentsInput, Prisma.NewsUncheckedCreateWithoutCommentsInput>
+  connectOrCreate?: Prisma.NewsCreateOrConnectWithoutCommentsInput
+  connect?: Prisma.NewsWhereUniqueInput
+}
+
+export type NewsUpdateOneRequiredWithoutCommentsNestedInput = {
+  create?: Prisma.XOR<Prisma.NewsCreateWithoutCommentsInput, Prisma.NewsUncheckedCreateWithoutCommentsInput>
+  connectOrCreate?: Prisma.NewsCreateOrConnectWithoutCommentsInput
+  upsert?: Prisma.NewsUpsertWithoutCommentsInput
+  connect?: Prisma.NewsWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.NewsUpdateToOneWithWhereWithoutCommentsInput, Prisma.NewsUpdateWithoutCommentsInput>, Prisma.NewsUncheckedUpdateWithoutCommentsInput>
+}
+
 export type NewsCreateWithoutAuthorInput = {
   id?: string
   title: string
@@ -935,6 +982,8 @@ export type NewsCreateWithoutAuthorInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   category: Prisma.CategoryCreateNestedOneWithoutNewsInput
+  likes?: Prisma.LikeCreateNestedManyWithoutNewsInput
+  comments?: Prisma.CommentCreateNestedManyWithoutNewsInput
 }
 
 export type NewsUncheckedCreateWithoutAuthorInput = {
@@ -961,6 +1010,8 @@ export type NewsUncheckedCreateWithoutAuthorInput = {
   categoryId: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutNewsInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutNewsInput
 }
 
 export type NewsCreateOrConnectWithoutAuthorInput = {
@@ -1043,6 +1094,8 @@ export type NewsCreateWithoutCategoryInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   author: Prisma.UserCreateNestedOneWithoutNewsInput
+  likes?: Prisma.LikeCreateNestedManyWithoutNewsInput
+  comments?: Prisma.CommentCreateNestedManyWithoutNewsInput
 }
 
 export type NewsUncheckedCreateWithoutCategoryInput = {
@@ -1069,6 +1122,8 @@ export type NewsUncheckedCreateWithoutCategoryInput = {
   authorId: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutNewsInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutNewsInput
 }
 
 export type NewsCreateOrConnectWithoutCategoryInput = {
@@ -1095,6 +1150,262 @@ export type NewsUpdateWithWhereUniqueWithoutCategoryInput = {
 export type NewsUpdateManyWithWhereWithoutCategoryInput = {
   where: Prisma.NewsScalarWhereInput
   data: Prisma.XOR<Prisma.NewsUpdateManyMutationInput, Prisma.NewsUncheckedUpdateManyWithoutCategoryInput>
+}
+
+export type NewsCreateWithoutLikesInput = {
+  id?: string
+  title: string
+  description?: string | null
+  type: $Enums.NewsType
+  status?: $Enums.ContentStatus
+  videoUrl?: string | null
+  photoUrl?: string | null
+  thumbnailUrl?: string | null
+  additionalPhotos?: Prisma.NewsCreateadditionalPhotosInput | string[]
+  viewCount?: number
+  likeCount?: number
+  shareCount?: number
+  tags?: Prisma.NewsCreatetagsInput | string[]
+  subCategory?: string | null
+  location?: string | null
+  newsDate?: Date | string | null
+  rejectionReason?: string | null
+  adminComment?: string | null
+  externalId?: string | null
+  source?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  author: Prisma.UserCreateNestedOneWithoutNewsInput
+  category: Prisma.CategoryCreateNestedOneWithoutNewsInput
+  comments?: Prisma.CommentCreateNestedManyWithoutNewsInput
+}
+
+export type NewsUncheckedCreateWithoutLikesInput = {
+  id?: string
+  title: string
+  description?: string | null
+  type: $Enums.NewsType
+  status?: $Enums.ContentStatus
+  videoUrl?: string | null
+  photoUrl?: string | null
+  thumbnailUrl?: string | null
+  additionalPhotos?: Prisma.NewsCreateadditionalPhotosInput | string[]
+  viewCount?: number
+  likeCount?: number
+  shareCount?: number
+  tags?: Prisma.NewsCreatetagsInput | string[]
+  subCategory?: string | null
+  location?: string | null
+  newsDate?: Date | string | null
+  rejectionReason?: string | null
+  adminComment?: string | null
+  externalId?: string | null
+  source?: string
+  authorId: string
+  categoryId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutNewsInput
+}
+
+export type NewsCreateOrConnectWithoutLikesInput = {
+  where: Prisma.NewsWhereUniqueInput
+  create: Prisma.XOR<Prisma.NewsCreateWithoutLikesInput, Prisma.NewsUncheckedCreateWithoutLikesInput>
+}
+
+export type NewsUpsertWithoutLikesInput = {
+  update: Prisma.XOR<Prisma.NewsUpdateWithoutLikesInput, Prisma.NewsUncheckedUpdateWithoutLikesInput>
+  create: Prisma.XOR<Prisma.NewsCreateWithoutLikesInput, Prisma.NewsUncheckedCreateWithoutLikesInput>
+  where?: Prisma.NewsWhereInput
+}
+
+export type NewsUpdateToOneWithWhereWithoutLikesInput = {
+  where?: Prisma.NewsWhereInput
+  data: Prisma.XOR<Prisma.NewsUpdateWithoutLikesInput, Prisma.NewsUncheckedUpdateWithoutLikesInput>
+}
+
+export type NewsUpdateWithoutLikesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumNewsTypeFieldUpdateOperationsInput | $Enums.NewsType
+  status?: Prisma.EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+  videoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  thumbnailUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  additionalPhotos?: Prisma.NewsUpdateadditionalPhotosInput | string[]
+  viewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  likeCount?: Prisma.IntFieldUpdateOperationsInput | number
+  shareCount?: Prisma.IntFieldUpdateOperationsInput | number
+  tags?: Prisma.NewsUpdatetagsInput | string[]
+  subCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  newsDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  author?: Prisma.UserUpdateOneRequiredWithoutNewsNestedInput
+  category?: Prisma.CategoryUpdateOneRequiredWithoutNewsNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutNewsNestedInput
+}
+
+export type NewsUncheckedUpdateWithoutLikesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumNewsTypeFieldUpdateOperationsInput | $Enums.NewsType
+  status?: Prisma.EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+  videoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  thumbnailUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  additionalPhotos?: Prisma.NewsUpdateadditionalPhotosInput | string[]
+  viewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  likeCount?: Prisma.IntFieldUpdateOperationsInput | number
+  shareCount?: Prisma.IntFieldUpdateOperationsInput | number
+  tags?: Prisma.NewsUpdatetagsInput | string[]
+  subCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  newsDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  categoryId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutNewsNestedInput
+}
+
+export type NewsCreateWithoutCommentsInput = {
+  id?: string
+  title: string
+  description?: string | null
+  type: $Enums.NewsType
+  status?: $Enums.ContentStatus
+  videoUrl?: string | null
+  photoUrl?: string | null
+  thumbnailUrl?: string | null
+  additionalPhotos?: Prisma.NewsCreateadditionalPhotosInput | string[]
+  viewCount?: number
+  likeCount?: number
+  shareCount?: number
+  tags?: Prisma.NewsCreatetagsInput | string[]
+  subCategory?: string | null
+  location?: string | null
+  newsDate?: Date | string | null
+  rejectionReason?: string | null
+  adminComment?: string | null
+  externalId?: string | null
+  source?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  author: Prisma.UserCreateNestedOneWithoutNewsInput
+  category: Prisma.CategoryCreateNestedOneWithoutNewsInput
+  likes?: Prisma.LikeCreateNestedManyWithoutNewsInput
+}
+
+export type NewsUncheckedCreateWithoutCommentsInput = {
+  id?: string
+  title: string
+  description?: string | null
+  type: $Enums.NewsType
+  status?: $Enums.ContentStatus
+  videoUrl?: string | null
+  photoUrl?: string | null
+  thumbnailUrl?: string | null
+  additionalPhotos?: Prisma.NewsCreateadditionalPhotosInput | string[]
+  viewCount?: number
+  likeCount?: number
+  shareCount?: number
+  tags?: Prisma.NewsCreatetagsInput | string[]
+  subCategory?: string | null
+  location?: string | null
+  newsDate?: Date | string | null
+  rejectionReason?: string | null
+  adminComment?: string | null
+  externalId?: string | null
+  source?: string
+  authorId: string
+  categoryId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  likes?: Prisma.LikeUncheckedCreateNestedManyWithoutNewsInput
+}
+
+export type NewsCreateOrConnectWithoutCommentsInput = {
+  where: Prisma.NewsWhereUniqueInput
+  create: Prisma.XOR<Prisma.NewsCreateWithoutCommentsInput, Prisma.NewsUncheckedCreateWithoutCommentsInput>
+}
+
+export type NewsUpsertWithoutCommentsInput = {
+  update: Prisma.XOR<Prisma.NewsUpdateWithoutCommentsInput, Prisma.NewsUncheckedUpdateWithoutCommentsInput>
+  create: Prisma.XOR<Prisma.NewsCreateWithoutCommentsInput, Prisma.NewsUncheckedCreateWithoutCommentsInput>
+  where?: Prisma.NewsWhereInput
+}
+
+export type NewsUpdateToOneWithWhereWithoutCommentsInput = {
+  where?: Prisma.NewsWhereInput
+  data: Prisma.XOR<Prisma.NewsUpdateWithoutCommentsInput, Prisma.NewsUncheckedUpdateWithoutCommentsInput>
+}
+
+export type NewsUpdateWithoutCommentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumNewsTypeFieldUpdateOperationsInput | $Enums.NewsType
+  status?: Prisma.EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+  videoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  thumbnailUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  additionalPhotos?: Prisma.NewsUpdateadditionalPhotosInput | string[]
+  viewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  likeCount?: Prisma.IntFieldUpdateOperationsInput | number
+  shareCount?: Prisma.IntFieldUpdateOperationsInput | number
+  tags?: Prisma.NewsUpdatetagsInput | string[]
+  subCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  newsDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  author?: Prisma.UserUpdateOneRequiredWithoutNewsNestedInput
+  category?: Prisma.CategoryUpdateOneRequiredWithoutNewsNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutNewsNestedInput
+}
+
+export type NewsUncheckedUpdateWithoutCommentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumNewsTypeFieldUpdateOperationsInput | $Enums.NewsType
+  status?: Prisma.EnumContentStatusFieldUpdateOperationsInput | $Enums.ContentStatus
+  videoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  photoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  thumbnailUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  additionalPhotos?: Prisma.NewsUpdateadditionalPhotosInput | string[]
+  viewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  likeCount?: Prisma.IntFieldUpdateOperationsInput | number
+  shareCount?: Prisma.IntFieldUpdateOperationsInput | number
+  tags?: Prisma.NewsUpdatetagsInput | string[]
+  subCategory?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  newsDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  adminComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  source?: Prisma.StringFieldUpdateOperationsInput | string
+  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  categoryId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutNewsNestedInput
 }
 
 export type NewsCreateManyAuthorInput = {
@@ -1147,6 +1458,8 @@ export type NewsUpdateWithoutAuthorInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.CategoryUpdateOneRequiredWithoutNewsNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutNewsNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutNewsNestedInput
 }
 
 export type NewsUncheckedUpdateWithoutAuthorInput = {
@@ -1173,6 +1486,8 @@ export type NewsUncheckedUpdateWithoutAuthorInput = {
   categoryId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutNewsNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutNewsNestedInput
 }
 
 export type NewsUncheckedUpdateManyWithoutAuthorInput = {
@@ -1251,6 +1566,8 @@ export type NewsUpdateWithoutCategoryInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   author?: Prisma.UserUpdateOneRequiredWithoutNewsNestedInput
+  likes?: Prisma.LikeUpdateManyWithoutNewsNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutNewsNestedInput
 }
 
 export type NewsUncheckedUpdateWithoutCategoryInput = {
@@ -1277,6 +1594,8 @@ export type NewsUncheckedUpdateWithoutCategoryInput = {
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  likes?: Prisma.LikeUncheckedUpdateManyWithoutNewsNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutNewsNestedInput
 }
 
 export type NewsUncheckedUpdateManyWithoutCategoryInput = {
@@ -1306,6 +1625,44 @@ export type NewsUncheckedUpdateManyWithoutCategoryInput = {
 }
 
 
+/**
+ * Count Type NewsCountOutputType
+ */
+
+export type NewsCountOutputType = {
+  likes: number
+  comments: number
+}
+
+export type NewsCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  likes?: boolean | NewsCountOutputTypeCountLikesArgs
+  comments?: boolean | NewsCountOutputTypeCountCommentsArgs
+}
+
+/**
+ * NewsCountOutputType without action
+ */
+export type NewsCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the NewsCountOutputType
+   */
+  select?: Prisma.NewsCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * NewsCountOutputType without action
+ */
+export type NewsCountOutputTypeCountLikesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LikeWhereInput
+}
+
+/**
+ * NewsCountOutputType without action
+ */
+export type NewsCountOutputTypeCountCommentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CommentWhereInput
+}
+
 
 export type NewsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1334,6 +1691,9 @@ export type NewsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   updatedAt?: boolean
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   category?: boolean | Prisma.CategoryDefaultArgs<ExtArgs>
+  likes?: boolean | Prisma.News$likesArgs<ExtArgs>
+  comments?: boolean | Prisma.News$commentsArgs<ExtArgs>
+  _count?: boolean | Prisma.NewsCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["news"]>
 
 export type NewsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1425,6 +1785,9 @@ export type NewsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = run
 export type NewsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   category?: boolean | Prisma.CategoryDefaultArgs<ExtArgs>
+  likes?: boolean | Prisma.News$likesArgs<ExtArgs>
+  comments?: boolean | Prisma.News$commentsArgs<ExtArgs>
+  _count?: boolean | Prisma.NewsCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type NewsIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1440,6 +1803,8 @@ export type $NewsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   objects: {
     author: Prisma.$UserPayload<ExtArgs>
     category: Prisma.$CategoryPayload<ExtArgs>
+    likes: Prisma.$LikePayload<ExtArgs>[]
+    comments: Prisma.$CommentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1862,6 +2227,8 @@ export interface Prisma__NewsClient<T, Null = never, ExtArgs extends runtime.Typ
   readonly [Symbol.toStringTag]: "PrismaPromise"
   author<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   category<T extends Prisma.CategoryDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CategoryDefaultArgs<ExtArgs>>): Prisma.Prisma__CategoryClient<runtime.Types.Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  likes<T extends Prisma.News$likesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.News$likesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  comments<T extends Prisma.News$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.News$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2313,6 +2680,54 @@ export type NewsDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Limit how many News to delete.
    */
   limit?: number
+}
+
+/**
+ * News.likes
+ */
+export type News$likesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Like
+   */
+  select?: Prisma.LikeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Like
+   */
+  omit?: Prisma.LikeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LikeInclude<ExtArgs> | null
+  where?: Prisma.LikeWhereInput
+  orderBy?: Prisma.LikeOrderByWithRelationInput | Prisma.LikeOrderByWithRelationInput[]
+  cursor?: Prisma.LikeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LikeScalarFieldEnum | Prisma.LikeScalarFieldEnum[]
+}
+
+/**
+ * News.comments
+ */
+export type News$commentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Comment
+   */
+  select?: Prisma.CommentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Comment
+   */
+  omit?: Prisma.CommentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CommentInclude<ExtArgs> | null
+  where?: Prisma.CommentWhereInput
+  orderBy?: Prisma.CommentOrderByWithRelationInput | Prisma.CommentOrderByWithRelationInput[]
+  cursor?: Prisma.CommentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CommentScalarFieldEnum | Prisma.CommentScalarFieldEnum[]
 }
 
 /**

@@ -3,9 +3,13 @@ import { prisma } from '../../lib/prisma';
 import { NewsType } from '../../generated/prisma';
 import { AuthRequest } from '../../middleware/auth.middleware';
 import { checkForSpam } from '../../services/moderation.service';
-import { uploadFileToS3 } from '../../services/s3.service';
+import { uploadFileToS3, s3Client, BUCKET_NAME } from '../../services/s3.service';
+import { GetObjectCommand } from '@aws-sdk/client-s3';
 import { videoQueue } from '../../lib/queue';
+import { redis } from '../../lib/redis';
 import fs from 'fs';
+import path from 'path';
+import jwt from 'jsonwebtoken';
 
 export const getCategories = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -29,7 +33,8 @@ export const getFeed = async (req: Request, res: Response): Promise<void> => {
       },
       include: {
         author: { select: { id: true, profile: { select: { name: true, photoUrl: true } } } },
-        category: { select: { name: true } }
+        category: { select: { name: true } },
+        _count: { select: { comments: true } }
       },
       orderBy: { createdAt: 'desc' }
     });
@@ -55,7 +60,8 @@ export const getRecommendedNews = async (req: Request, res: Response): Promise<v
       },
       include: {
         author: { select: { id: true, profile: { select: { name: true, photoUrl: true } } } },
-        category: { select: { name: true } }
+        category: { select: { name: true } },
+        _count: { select: { comments: true } }
       }
     });
 
@@ -96,19 +102,83 @@ export const getRecommendedNews = async (req: Request, res: Response): Promise<v
 
 export const getShorts = async (req: Request, res: Response): Promise<void> => {
   try {
-    const shorts = await prisma.news.findMany({
-      where: {
-        status: 'APPROVED',
-        type: 'SHORT'
-      },
-      include: {
-        author: { select: { id: true, profile: { select: { name: true, photoUrl: true } } } },
-        category: { select: { name: true } }
-      },
-      orderBy: { createdAt: 'desc' }
-    });
+    const cursor = req.query.cursor as string | undefined;
+    const limit = parseInt((req.query.limit as string) || '10', 10);
 
-    res.status(200).json({ success: true, data: shorts });
+    const cacheKey = `shorts_feed:${cursor || 'first'}:${limit}`;
+    const cachedData = await redis.get(cacheKey);
+
+    let responseData;
+
+    if (cachedData) {
+      responseData = JSON.parse(cachedData);
+    } else {
+      const shorts = await prisma.news.findMany({
+        where: {
+          status: 'APPROVED',
+          type: 'SHORT'
+        },
+        take: limit + 1,
+        cursor: cursor ? { id: cursor } : undefined,
+        include: {
+          author: { select: { id: true, profile: { select: { name: true, photoUrl: true } } } },
+          category: { select: { name: true } },
+          _count: { select: { comments: true } }
+        },
+        orderBy: { createdAt: 'desc' }
+      });
+
+      let nextCursor: string | null = null;
+      if (shorts.length > limit) {
+        const nextItem = shorts.pop();
+        nextCursor = nextItem!.id;
+      }
+
+      responseData = { success: true, data: shorts, nextCursor };
+
+      // Cache for 60 seconds
+      await redis.setex(cacheKey, 60, JSON.stringify(responseData));
+    }
+
+    // Determine if logged in user has liked any of these
+    let userId: string | null = null;
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.split(' ')[1];
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret') as any;
+        userId = decoded.userId;
+      } catch (e) {
+        // ignore invalid token
+      }
+    }
+
+    let finalData = responseData;
+    if (userId) {
+      const newsIds = responseData.data.map((n: any) => n.id);
+      const likes = await prisma.like.findMany({
+        where: { userId, newsId: { in: newsIds } }
+      });
+      const likedNewsIds = new Set(likes.map(l => l.newsId));
+      
+      finalData = {
+        ...responseData,
+        data: responseData.data.map((n: any) => ({
+          ...n,
+          isLiked: likedNewsIds.has(n.id)
+        }))
+      };
+    } else {
+      finalData = {
+        ...responseData,
+        data: responseData.data.map((n: any) => ({
+          ...n,
+          isLiked: false
+        }))
+      };
+    }
+
+    res.status(200).json(finalData);
   } catch (error) {
     console.error('Get Shorts Error:', error);
     res.status(500).json({ success: false, message: 'Internal server error' });
@@ -138,6 +208,7 @@ export const createNews = async (req: AuthRequest, res: Response): Promise<void>
     if (videoKey && (type === 'VIDEO' || type === 'SHORT')) {
       videoUrl = 'processing';
     } else if (req.files) {
+      const files = req.files as { [fieldname: string]: Express.Multer.File[] };
       const uploadToS3 = async (file: any, folder: string) => {
         const fileExt = file.originalname.split('.').pop() || '';
         const fileName = `${folder}/${authorId}-${Date.now()}-${Math.round(Math.random() * 1e9)}.${fileExt}`;
@@ -147,21 +218,21 @@ export const createNews = async (req: AuthRequest, res: Response): Promise<void>
         return fileName;
       };
 
-      if (req.files.video && req.files.video[0]) {
+      if (files.video && files.video[0]) {
         if (type === 'VIDEO' || type === 'SHORT') {
           videoUrl = 'processing';
         } else {
-          videoUrl = await uploadToS3(req.files.video[0], 'videos');
+          videoUrl = await uploadToS3(files.video[0], 'videos');
         }
       }
-      if (req.files.photo && req.files.photo[0]) {
-        photoUrl = await uploadToS3(req.files.photo[0], 'photos');
+      if (files.photo && files.photo[0]) {
+        photoUrl = await uploadToS3(files.photo[0], 'photos');
       }
-      if (req.files.thumbnail && req.files.thumbnail[0]) {
-        thumbnailUrl = await uploadToS3(req.files.thumbnail[0], 'thumbnails');
+      if (files.thumbnail && files.thumbnail[0]) {
+        thumbnailUrl = await uploadToS3(files.thumbnail[0], 'thumbnails');
       }
-      if (req.files.additionalPhotos && req.files.additionalPhotos.length > 0) {
-        for (const file of req.files.additionalPhotos) {
+      if (files.additionalPhotos && files.additionalPhotos.length > 0) {
+        for (const file of files.additionalPhotos) {
           additionalPhotos.push(await uploadToS3(file, 'photos'));
         }
       }
@@ -211,12 +282,15 @@ export const createNews = async (req: AuthRequest, res: Response): Promise<void>
       await videoQueue.add('process', { newsId: news.id, authorId, videoKey });
       res.status(201).json({ success: true, data: news, message: 'Video uploaded and is processing...' });
       return;
-    } else if ((type === 'VIDEO' || type === 'SHORT') && req.files && !Array.isArray(req.files) && req.files.video && req.files.video[0]) {
-      // Support for old clients that still upload to the backend directly
-      const localVideoPath = req.files.video[0].path;
-      await videoQueue.add('process', { newsId: news.id, authorId, localVideoPath });
-      res.status(201).json({ success: true, data: news, message: 'Video uploaded and is processing...' });
-      return;
+    } else if ((type === 'VIDEO' || type === 'SHORT') && req.files && !Array.isArray(req.files)) {
+      const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+      if (files.video && files.video[0]) {
+        // Support for old clients that still upload to the backend directly
+        const localVideoPath = files.video[0].path;
+        await videoQueue.add('process', { newsId: news.id, authorId, localVideoPath });
+        res.status(201).json({ success: true, data: news, message: 'Video uploaded and is processing...' });
+        return;
+      }
     }
 
     res.status(201).json({ success: true, data: news, message: 'Content submitted for review' });
@@ -255,6 +329,173 @@ export const getMyContent = async (req: any, res: Response): Promise<void> => {
     });
   } catch (error) {
     console.error('Get My Content Error:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
+export const streamVideo = async (req: Request, res: Response): Promise<void> => {
+  try {
+    let keyRaw = req.path.replace(/^\//, '') || req.query.key;
+    const key = keyRaw as string;
+    if (!key) {
+      res.status(400).send('Missing key');
+      return;
+    }
+
+    if (key === 'processing') {
+      res.status(404).send('Video is still processing');
+      return;
+    }
+
+    const range = req.headers.range;
+    const getParams: any = {
+      Bucket: BUCKET_NAME,
+      Key: key,
+    };
+    if (range) {
+      getParams.Range = range;
+    }
+
+    const command = new GetObjectCommand(getParams);
+    const s3Item = await s3Client.send(command);
+
+    if (s3Item.ContentRange) {
+      res.setHeader('Content-Range', s3Item.ContentRange);
+      res.status(206);
+    } else {
+      res.status(200);
+    }
+    
+    if (s3Item.AcceptRanges) res.setHeader('Accept-Ranges', s3Item.AcceptRanges);
+    if (s3Item.ContentType) res.setHeader('Content-Type', s3Item.ContentType);
+    if (s3Item.ContentLength) res.setHeader('Content-Length', s3Item.ContentLength);
+
+    const stream = s3Item.Body as any;
+    stream.pipe(res);
+  } catch (error) {
+    console.error('Error streaming public video from S3:', error);
+    res.status(404).send('Not Found');
+  }
+};
+
+export const toggleLike = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.user?.userId;
+    const newsId = req.params.id as string;
+
+    if (!userId) {
+      res.status(401).json({ success: false, message: 'Unauthorized' });
+      return;
+    }
+
+    const existingLike = await prisma.like.findUnique({
+      where: { userId_newsId: { userId, newsId } }
+    });
+
+    if (existingLike) {
+      await prisma.like.delete({
+        where: { userId_newsId: { userId, newsId } }
+      });
+      await prisma.news.update({
+        where: { id: newsId },
+        data: { likeCount: { decrement: 1 } }
+      });
+      
+      // Invalidate cache
+      const keys = await redis.keys('shorts_feed:*');
+      if (keys.length > 0) {
+        await redis.del(...keys);
+      }
+
+      res.status(200).json({ success: true, message: 'Unliked', isLiked: false });
+    } else {
+      await prisma.like.create({
+        data: { userId, newsId }
+      });
+      await prisma.news.update({
+        where: { id: newsId },
+        data: { likeCount: { increment: 1 } }
+      });
+      
+      // Invalidate cache
+      const keys = await redis.keys('shorts_feed:*');
+      if (keys.length > 0) {
+        await redis.del(...keys);
+      }
+
+      res.status(200).json({ success: true, message: 'Liked', isLiked: true });
+    }
+  } catch (error) {
+    console.error('Toggle Like Error:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
+export const incrementView = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const newsId = req.params.id as string;
+    
+    await prisma.news.update({
+      where: { id: newsId },
+      data: { viewCount: { increment: 1 } }
+    });
+
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.error('Increment View Error:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
+export const getComments = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const newsId = req.params.id as string;
+    const comments = await prisma.comment.findMany({
+      where: { newsId, parentId: null },
+      include: {
+        user: { select: { id: true, profile: { select: { name: true, photoUrl: true } } } },
+        replies: {
+          include: {
+            user: { select: { id: true, profile: { select: { name: true, photoUrl: true } } } }
+          },
+          orderBy: { createdAt: 'asc' }
+        }
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+    res.status(200).json({ success: true, data: comments });
+  } catch (error) {
+    console.error('Get Comments Error:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
+export const addComment = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const userId = req.user?.userId;
+    const newsId = req.params.id as string;
+    const { text, parentId } = req.body;
+
+    if (!userId) {
+      res.status(401).json({ success: false, message: 'Unauthorized' });
+      return;
+    }
+    
+    if (!text || text.trim() === '') {
+      res.status(400).json({ success: false, message: 'Comment text is required' });
+      return;
+    }
+
+    const comment = await prisma.comment.create({
+      data: { text, userId, newsId, parentId: parentId || null },
+      include: {
+        user: { select: { id: true, profile: { select: { name: true, photoUrl: true } } } }
+      }
+    });
+
+    res.status(201).json({ success: true, data: comment });
+  } catch (error) {
+    console.error('Add Comment Error:', error);
     res.status(500).json({ success: false, message: 'Internal server error' });
   }
 };

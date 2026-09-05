@@ -126,3 +126,20 @@ export const generateHLS = async (inputPath: string, outputDir: string): Promise
     });
   });
 };
+
+export const generateThumbnail = async (inputPath: string, outputDir: string, filename: string = 'thumbnail.jpg'): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    if (!fs.existsSync(outputDir)) {
+      fs.mkdirSync(outputDir, { recursive: true });
+    }
+    ffmpeg(inputPath)
+      .on('end', () => resolve(path.join(outputDir, filename)))
+      .on('error', (err) => reject(err))
+      .screenshots({
+        count: 1,
+        folder: outputDir,
+        filename: filename,
+        timestamps: ['00:00:01.000'] // take screenshot at 1 second
+      });
+  });
+};
