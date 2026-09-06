@@ -53,7 +53,7 @@ export const sendOtp = async (req: Request, res: Response): Promise<void> => {
       console.warn(`[WARNING] Could not send SMS (Twilio restriction):`, smsError.message);
     }
 
-    res.status(200).json({ success: true, message: 'OTP sent successfully' });
+    res.status(200).json({ success: true, message: 'OTP sent successfully', devOtp: otp });
   } catch (error: any) {
     console.error('Send OTP Error:', error);
     if (error.message && error.message.includes('Twilio SMS provider is not configured')) {

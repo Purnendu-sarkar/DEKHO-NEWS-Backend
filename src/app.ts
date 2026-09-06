@@ -10,6 +10,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
 
+//health check
+app.get('/', (req: Request, res: Response) => {
+  res.status(200).json({
+    success: true,
+    message: 'DEKHO NEWS API is running successfully',
+    timestamp: new Date().toISOString(),
+  });
+});
+
+
 // Health Check Route
 app.get('/api/v1/health', (req: Request, res: Response) => {
   res.status(200).json({
