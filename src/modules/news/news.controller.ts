@@ -27,6 +27,9 @@ export const getCategories = async (req: Request, res: Response): Promise<void> 
 export const getFeed = async (req: Request, res: Response): Promise<void> => {
   try {
     const typeParam = req.query.type as string;
+    const cursor = req.query.cursor as string | undefined;
+    const limit = parseInt((req.query.limit as string) || '10', 10);
+
     let typeFilter: any = { in: ['VIDEO', 'PHOTO', 'READ'] };
     
     if (typeParam === 'Videos') typeFilter = 'VIDEO';
@@ -39,6 +42,8 @@ export const getFeed = async (req: Request, res: Response): Promise<void> => {
         status: 'APPROVED',
         type: typeFilter
       },
+      take: limit + 1,
+      cursor: cursor ? { id: cursor } : undefined,
       include: {
         author: { select: { id: true, profile: { select: { name: true, photoUrl: true } } } },
         category: { select: { name: true } },
@@ -47,9 +52,96 @@ export const getFeed = async (req: Request, res: Response): Promise<void> => {
       orderBy: { createdAt: 'desc' }
     });
 
-    res.status(200).json({ success: true, data: news });
+    let nextCursor: string | null = null;
+    if (news.length > limit) {
+      const nextItem = news.pop();
+      nextCursor = nextItem!.id;
+    }
+
+    res.status(200).json({ success: true, data: news, nextCursor });
   } catch (error) {
     console.error('Get Feed Error:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
+export const getRelatedNews = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const newsId = req.params.id as string;
+    
+    // Find the current news to get its category
+    const currentNews = await prisma.news.findUnique({
+      where: { id: newsId }
+    });
+
+    if (!currentNews) {
+      res.status(404).json({ success: false, message: 'News not found' });
+      return;
+    }
+
+    // Fetch related news (same category, excluding the current one)
+    const relatedNews = await prisma.news.findMany({
+      where: {
+        status: 'APPROVED',
+        categoryId: currentNews.categoryId,
+        id: { not: newsId }
+      },
+      take: 10,
+      include: {
+        author: { select: { id: true, profile: { select: { name: true, photoUrl: true } } } },
+        category: { select: { name: true } },
+        _count: { select: { comments: true } }
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+
+    // If not enough related news in the same category, fetch recent ones to fill up
+    if (relatedNews.length < 5) {
+      const moreNews = await prisma.news.findMany({
+        where: {
+          status: 'APPROVED',
+          id: { not: newsId },
+          NOT: { id: { in: relatedNews.map(r => r.id) } }
+        },
+        take: 10 - relatedNews.length,
+        include: {
+          author: { select: { id: true, profile: { select: { name: true, photoUrl: true } } } },
+          category: { select: { name: true } },
+          _count: { select: { comments: true } }
+        },
+        orderBy: { createdAt: 'desc' }
+      });
+      relatedNews.push(...moreNews);
+    }
+
+    res.status(200).json({ success: true, data: relatedNews });
+  } catch (error) {
+    console.error('Get Related News Error:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
+export const getNewsById = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const newsId = req.params.id as string;
+    
+    const news = await prisma.news.findUnique({
+      where: { id: newsId },
+      include: {
+        author: { select: { id: true, profile: { select: { name: true, photoUrl: true } } } },
+        category: { select: { name: true } },
+        _count: { select: { comments: true } }
+      }
+    });
+
+    if (!news) {
+      res.status(404).json({ success: false, message: 'News not found' });
+      return;
+    }
+
+    res.status(200).json({ success: true, data: news });
+  } catch (error) {
+    console.error('Get News By Id Error:', error);
     res.status(500).json({ success: false, message: 'Internal server error' });
   }
 };

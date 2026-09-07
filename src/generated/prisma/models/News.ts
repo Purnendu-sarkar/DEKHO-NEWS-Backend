@@ -30,12 +30,14 @@ export type NewsAvgAggregateOutputType = {
   viewCount: number | null
   likeCount: number | null
   shareCount: number | null
+  videoDuration: number | null
 }
 
 export type NewsSumAggregateOutputType = {
   viewCount: number | null
   likeCount: number | null
   shareCount: number | null
+  videoDuration: number | null
 }
 
 export type NewsMinAggregateOutputType = {
@@ -55,6 +57,7 @@ export type NewsMinAggregateOutputType = {
   newsDate: Date | null
   rejectionReason: string | null
   adminComment: string | null
+  videoDuration: number | null
   externalId: string | null
   source: string | null
   authorId: string | null
@@ -80,6 +83,7 @@ export type NewsMaxAggregateOutputType = {
   newsDate: Date | null
   rejectionReason: string | null
   adminComment: string | null
+  videoDuration: number | null
   externalId: string | null
   source: string | null
   authorId: string | null
@@ -107,6 +111,7 @@ export type NewsCountAggregateOutputType = {
   newsDate: number
   rejectionReason: number
   adminComment: number
+  videoDuration: number
   externalId: number
   source: number
   authorId: number
@@ -121,12 +126,14 @@ export type NewsAvgAggregateInputType = {
   viewCount?: true
   likeCount?: true
   shareCount?: true
+  videoDuration?: true
 }
 
 export type NewsSumAggregateInputType = {
   viewCount?: true
   likeCount?: true
   shareCount?: true
+  videoDuration?: true
 }
 
 export type NewsMinAggregateInputType = {
@@ -146,6 +153,7 @@ export type NewsMinAggregateInputType = {
   newsDate?: true
   rejectionReason?: true
   adminComment?: true
+  videoDuration?: true
   externalId?: true
   source?: true
   authorId?: true
@@ -171,6 +179,7 @@ export type NewsMaxAggregateInputType = {
   newsDate?: true
   rejectionReason?: true
   adminComment?: true
+  videoDuration?: true
   externalId?: true
   source?: true
   authorId?: true
@@ -198,6 +207,7 @@ export type NewsCountAggregateInputType = {
   newsDate?: true
   rejectionReason?: true
   adminComment?: true
+  videoDuration?: true
   externalId?: true
   source?: true
   authorId?: true
@@ -312,6 +322,7 @@ export type NewsGroupByOutputType = {
   newsDate: Date | null
   rejectionReason: string | null
   adminComment: string | null
+  videoDuration: number | null
   externalId: string | null
   source: string
   authorId: string
@@ -362,6 +373,7 @@ export type NewsWhereInput = {
   newsDate?: Prisma.DateTimeNullableFilter<"News"> | Date | string | null
   rejectionReason?: Prisma.StringNullableFilter<"News"> | string | null
   adminComment?: Prisma.StringNullableFilter<"News"> | string | null
+  videoDuration?: Prisma.IntNullableFilter<"News"> | number | null
   externalId?: Prisma.StringNullableFilter<"News"> | string | null
   source?: Prisma.StringFilter<"News"> | string
   authorId?: Prisma.StringFilter<"News"> | string
@@ -393,6 +405,7 @@ export type NewsOrderByWithRelationInput = {
   newsDate?: Prisma.SortOrderInput | Prisma.SortOrder
   rejectionReason?: Prisma.SortOrderInput | Prisma.SortOrder
   adminComment?: Prisma.SortOrderInput | Prisma.SortOrder
+  videoDuration?: Prisma.SortOrderInput | Prisma.SortOrder
   externalId?: Prisma.SortOrderInput | Prisma.SortOrder
   source?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
@@ -428,6 +441,7 @@ export type NewsWhereUniqueInput = Prisma.AtLeast<{
   newsDate?: Prisma.DateTimeNullableFilter<"News"> | Date | string | null
   rejectionReason?: Prisma.StringNullableFilter<"News"> | string | null
   adminComment?: Prisma.StringNullableFilter<"News"> | string | null
+  videoDuration?: Prisma.IntNullableFilter<"News"> | number | null
   source?: Prisma.StringFilter<"News"> | string
   authorId?: Prisma.StringFilter<"News"> | string
   categoryId?: Prisma.StringFilter<"News"> | string
@@ -458,6 +472,7 @@ export type NewsOrderByWithAggregationInput = {
   newsDate?: Prisma.SortOrderInput | Prisma.SortOrder
   rejectionReason?: Prisma.SortOrderInput | Prisma.SortOrder
   adminComment?: Prisma.SortOrderInput | Prisma.SortOrder
+  videoDuration?: Prisma.SortOrderInput | Prisma.SortOrder
   externalId?: Prisma.SortOrderInput | Prisma.SortOrder
   source?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
@@ -493,6 +508,7 @@ export type NewsScalarWhereWithAggregatesInput = {
   newsDate?: Prisma.DateTimeNullableWithAggregatesFilter<"News"> | Date | string | null
   rejectionReason?: Prisma.StringNullableWithAggregatesFilter<"News"> | string | null
   adminComment?: Prisma.StringNullableWithAggregatesFilter<"News"> | string | null
+  videoDuration?: Prisma.IntNullableWithAggregatesFilter<"News"> | number | null
   externalId?: Prisma.StringNullableWithAggregatesFilter<"News"> | string | null
   source?: Prisma.StringWithAggregatesFilter<"News"> | string
   authorId?: Prisma.StringWithAggregatesFilter<"News"> | string
@@ -520,6 +536,7 @@ export type NewsCreateInput = {
   newsDate?: Date | string | null
   rejectionReason?: string | null
   adminComment?: string | null
+  videoDuration?: number | null
   externalId?: string | null
   source?: string
   createdAt?: Date | string
@@ -549,6 +566,7 @@ export type NewsUncheckedCreateInput = {
   newsDate?: Date | string | null
   rejectionReason?: string | null
   adminComment?: string | null
+  videoDuration?: number | null
   externalId?: string | null
   source?: string
   authorId: string
@@ -578,6 +596,7 @@ export type NewsUpdateInput = {
   newsDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adminComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  videoDuration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -607,6 +626,7 @@ export type NewsUncheckedUpdateInput = {
   newsDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adminComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  videoDuration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -636,6 +656,7 @@ export type NewsCreateManyInput = {
   newsDate?: Date | string | null
   rejectionReason?: string | null
   adminComment?: string | null
+  videoDuration?: number | null
   externalId?: string | null
   source?: string
   authorId: string
@@ -663,6 +684,7 @@ export type NewsUpdateManyMutationInput = {
   newsDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adminComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  videoDuration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -688,6 +710,7 @@ export type NewsUncheckedUpdateManyInput = {
   newsDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adminComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  videoDuration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -733,6 +756,7 @@ export type NewsCountOrderByAggregateInput = {
   newsDate?: Prisma.SortOrder
   rejectionReason?: Prisma.SortOrder
   adminComment?: Prisma.SortOrder
+  videoDuration?: Prisma.SortOrder
   externalId?: Prisma.SortOrder
   source?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
@@ -745,6 +769,7 @@ export type NewsAvgOrderByAggregateInput = {
   viewCount?: Prisma.SortOrder
   likeCount?: Prisma.SortOrder
   shareCount?: Prisma.SortOrder
+  videoDuration?: Prisma.SortOrder
 }
 
 export type NewsMaxOrderByAggregateInput = {
@@ -764,6 +789,7 @@ export type NewsMaxOrderByAggregateInput = {
   newsDate?: Prisma.SortOrder
   rejectionReason?: Prisma.SortOrder
   adminComment?: Prisma.SortOrder
+  videoDuration?: Prisma.SortOrder
   externalId?: Prisma.SortOrder
   source?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
@@ -789,6 +815,7 @@ export type NewsMinOrderByAggregateInput = {
   newsDate?: Prisma.SortOrder
   rejectionReason?: Prisma.SortOrder
   adminComment?: Prisma.SortOrder
+  videoDuration?: Prisma.SortOrder
   externalId?: Prisma.SortOrder
   source?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
@@ -801,6 +828,7 @@ export type NewsSumOrderByAggregateInput = {
   viewCount?: Prisma.SortOrder
   likeCount?: Prisma.SortOrder
   shareCount?: Prisma.SortOrder
+  videoDuration?: Prisma.SortOrder
 }
 
 export type NewsScalarRelationFilter = {
@@ -930,6 +958,14 @@ export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
 }
 
+export type NullableIntFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
 export type NewsCreateNestedOneWithoutLikesInput = {
   create?: Prisma.XOR<Prisma.NewsCreateWithoutLikesInput, Prisma.NewsUncheckedCreateWithoutLikesInput>
   connectOrCreate?: Prisma.NewsCreateOrConnectWithoutLikesInput
@@ -977,6 +1013,7 @@ export type NewsCreateWithoutAuthorInput = {
   newsDate?: Date | string | null
   rejectionReason?: string | null
   adminComment?: string | null
+  videoDuration?: number | null
   externalId?: string | null
   source?: string
   createdAt?: Date | string
@@ -1005,6 +1042,7 @@ export type NewsUncheckedCreateWithoutAuthorInput = {
   newsDate?: Date | string | null
   rejectionReason?: string | null
   adminComment?: string | null
+  videoDuration?: number | null
   externalId?: string | null
   source?: string
   categoryId: string
@@ -1062,6 +1100,7 @@ export type NewsScalarWhereInput = {
   newsDate?: Prisma.DateTimeNullableFilter<"News"> | Date | string | null
   rejectionReason?: Prisma.StringNullableFilter<"News"> | string | null
   adminComment?: Prisma.StringNullableFilter<"News"> | string | null
+  videoDuration?: Prisma.IntNullableFilter<"News"> | number | null
   externalId?: Prisma.StringNullableFilter<"News"> | string | null
   source?: Prisma.StringFilter<"News"> | string
   authorId?: Prisma.StringFilter<"News"> | string
@@ -1089,6 +1128,7 @@ export type NewsCreateWithoutCategoryInput = {
   newsDate?: Date | string | null
   rejectionReason?: string | null
   adminComment?: string | null
+  videoDuration?: number | null
   externalId?: string | null
   source?: string
   createdAt?: Date | string
@@ -1117,6 +1157,7 @@ export type NewsUncheckedCreateWithoutCategoryInput = {
   newsDate?: Date | string | null
   rejectionReason?: string | null
   adminComment?: string | null
+  videoDuration?: number | null
   externalId?: string | null
   source?: string
   authorId: string
@@ -1171,6 +1212,7 @@ export type NewsCreateWithoutLikesInput = {
   newsDate?: Date | string | null
   rejectionReason?: string | null
   adminComment?: string | null
+  videoDuration?: number | null
   externalId?: string | null
   source?: string
   createdAt?: Date | string
@@ -1199,6 +1241,7 @@ export type NewsUncheckedCreateWithoutLikesInput = {
   newsDate?: Date | string | null
   rejectionReason?: string | null
   adminComment?: string | null
+  videoDuration?: number | null
   externalId?: string | null
   source?: string
   authorId: string
@@ -1243,6 +1286,7 @@ export type NewsUpdateWithoutLikesInput = {
   newsDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adminComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  videoDuration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1271,6 +1315,7 @@ export type NewsUncheckedUpdateWithoutLikesInput = {
   newsDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adminComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  videoDuration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1299,6 +1344,7 @@ export type NewsCreateWithoutCommentsInput = {
   newsDate?: Date | string | null
   rejectionReason?: string | null
   adminComment?: string | null
+  videoDuration?: number | null
   externalId?: string | null
   source?: string
   createdAt?: Date | string
@@ -1327,6 +1373,7 @@ export type NewsUncheckedCreateWithoutCommentsInput = {
   newsDate?: Date | string | null
   rejectionReason?: string | null
   adminComment?: string | null
+  videoDuration?: number | null
   externalId?: string | null
   source?: string
   authorId: string
@@ -1371,6 +1418,7 @@ export type NewsUpdateWithoutCommentsInput = {
   newsDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adminComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  videoDuration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1399,6 +1447,7 @@ export type NewsUncheckedUpdateWithoutCommentsInput = {
   newsDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adminComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  videoDuration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1427,6 +1476,7 @@ export type NewsCreateManyAuthorInput = {
   newsDate?: Date | string | null
   rejectionReason?: string | null
   adminComment?: string | null
+  videoDuration?: number | null
   externalId?: string | null
   source?: string
   categoryId: string
@@ -1453,6 +1503,7 @@ export type NewsUpdateWithoutAuthorInput = {
   newsDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adminComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  videoDuration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1481,6 +1532,7 @@ export type NewsUncheckedUpdateWithoutAuthorInput = {
   newsDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adminComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  videoDuration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   categoryId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1509,6 +1561,7 @@ export type NewsUncheckedUpdateManyWithoutAuthorInput = {
   newsDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adminComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  videoDuration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   categoryId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1535,6 +1588,7 @@ export type NewsCreateManyCategoryInput = {
   newsDate?: Date | string | null
   rejectionReason?: string | null
   adminComment?: string | null
+  videoDuration?: number | null
   externalId?: string | null
   source?: string
   authorId: string
@@ -1561,6 +1615,7 @@ export type NewsUpdateWithoutCategoryInput = {
   newsDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adminComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  videoDuration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1589,6 +1644,7 @@ export type NewsUncheckedUpdateWithoutCategoryInput = {
   newsDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adminComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  videoDuration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1617,6 +1673,7 @@ export type NewsUncheckedUpdateManyWithoutCategoryInput = {
   newsDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   rejectionReason?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   adminComment?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  videoDuration?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   externalId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   source?: Prisma.StringFieldUpdateOperationsInput | string
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -1683,6 +1740,7 @@ export type NewsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   newsDate?: boolean
   rejectionReason?: boolean
   adminComment?: boolean
+  videoDuration?: boolean
   externalId?: boolean
   source?: boolean
   authorId?: boolean
@@ -1715,6 +1773,7 @@ export type NewsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   newsDate?: boolean
   rejectionReason?: boolean
   adminComment?: boolean
+  videoDuration?: boolean
   externalId?: boolean
   source?: boolean
   authorId?: boolean
@@ -1744,6 +1803,7 @@ export type NewsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   newsDate?: boolean
   rejectionReason?: boolean
   adminComment?: boolean
+  videoDuration?: boolean
   externalId?: boolean
   source?: boolean
   authorId?: boolean
@@ -1773,6 +1833,7 @@ export type NewsSelectScalar = {
   newsDate?: boolean
   rejectionReason?: boolean
   adminComment?: boolean
+  videoDuration?: boolean
   externalId?: boolean
   source?: boolean
   authorId?: boolean
@@ -1781,7 +1842,7 @@ export type NewsSelectScalar = {
   updatedAt?: boolean
 }
 
-export type NewsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "type" | "status" | "videoUrl" | "photoUrl" | "thumbnailUrl" | "additionalPhotos" | "viewCount" | "likeCount" | "shareCount" | "tags" | "subCategory" | "location" | "newsDate" | "rejectionReason" | "adminComment" | "externalId" | "source" | "authorId" | "categoryId" | "createdAt" | "updatedAt", ExtArgs["result"]["news"]>
+export type NewsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "description" | "type" | "status" | "videoUrl" | "photoUrl" | "thumbnailUrl" | "additionalPhotos" | "viewCount" | "likeCount" | "shareCount" | "tags" | "subCategory" | "location" | "newsDate" | "rejectionReason" | "adminComment" | "videoDuration" | "externalId" | "source" | "authorId" | "categoryId" | "createdAt" | "updatedAt", ExtArgs["result"]["news"]>
 export type NewsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   category?: boolean | Prisma.CategoryDefaultArgs<ExtArgs>
@@ -1825,6 +1886,7 @@ export type $NewsPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     newsDate: Date | null
     rejectionReason: string | null
     adminComment: string | null
+    videoDuration: number | null
     externalId: string | null
     source: string
     authorId: string
@@ -2276,6 +2338,7 @@ export interface NewsFieldRefs {
   readonly newsDate: Prisma.FieldRef<"News", 'DateTime'>
   readonly rejectionReason: Prisma.FieldRef<"News", 'String'>
   readonly adminComment: Prisma.FieldRef<"News", 'String'>
+  readonly videoDuration: Prisma.FieldRef<"News", 'Int'>
   readonly externalId: Prisma.FieldRef<"News", 'String'>
   readonly source: Prisma.FieldRef<"News", 'String'>
   readonly authorId: Prisma.FieldRef<"News", 'String'>

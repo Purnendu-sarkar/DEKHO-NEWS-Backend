@@ -1715,6 +1715,7 @@ export const NewsScalarFieldEnum = {
   newsDate: 'newsDate',
   rejectionReason: 'rejectionReason',
   adminComment: 'adminComment',
+  videoDuration: 'videoDuration',
   externalId: 'externalId',
   source: 'source',
   authorId: 'authorId',

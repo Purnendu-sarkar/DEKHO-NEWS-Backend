@@ -3,6 +3,8 @@ import {
   getFeed,
   getRecommendedNews,
   getShorts,
+  getRelatedNews,
+  getNewsById,
   createNews,
   getMyContent,
   getCategories,
@@ -25,6 +27,8 @@ router.get('/feed', getFeed);
 router.get('/shorts', getShorts);
 router.get('/recommended', getRecommendedNews);
 router.get('/categories', getCategories);
+router.get('/:id', getNewsById);
+router.get('/:id/related', getRelatedNews);
 
 // Social Interactions
 router.post('/:id/like', authenticate, toggleLike);

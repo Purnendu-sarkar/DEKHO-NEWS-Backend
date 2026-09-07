@@ -111,6 +111,7 @@ model News {
   newsDate        DateTime?
   rejectionReason String?
   adminComment    String?
+  videoDuration   Int?
   externalId      String?       @unique // e.g. youtube video id or facebook post id
   source          String        @default("INTERNAL") // INTERNAL, YOUTUBE, FACEBOOK
 
