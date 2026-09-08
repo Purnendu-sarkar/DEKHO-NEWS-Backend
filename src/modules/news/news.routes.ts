@@ -12,7 +12,8 @@ import {
   toggleLike,
   incrementView,
   getComments,
-  addComment
+  addComment,
+  getFeaturedNews
 } from './news.controller';
 import { authenticate } from '../../middleware/auth.middleware';
 import { upload } from '../../middleware/upload.middleware';
@@ -23,6 +24,7 @@ const router = Router();
 router.use('/stream', streamVideo);
 
 // Feed endpoints
+router.get('/featured', getFeaturedNews);
 router.get('/feed', getFeed);
 router.get('/shorts', getShorts);
 router.get('/recommended', getRecommendedNews);

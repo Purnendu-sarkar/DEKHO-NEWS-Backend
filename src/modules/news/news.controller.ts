@@ -65,6 +65,40 @@ export const getFeed = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
+export const getFeaturedNews = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const typeParam = req.query.type as string;
+    
+    let typeFilter: any = { in: ['VIDEO', 'PHOTO', 'READ'] };
+    if (typeParam === 'Videos') typeFilter = 'VIDEO';
+    else if (typeParam === 'Photos') typeFilter = 'PHOTO';
+    else if (typeParam === 'Read') typeFilter = 'READ';
+    else if (typeParam) typeFilter = typeParam;
+
+    const featuredNews = await prisma.news.findMany({
+      where: {
+        status: 'APPROVED',
+        type: typeFilter
+      },
+      take: 5,
+      include: {
+        author: { select: { id: true, profile: { select: { name: true, photoUrl: true } } } },
+        category: { select: { name: true } },
+        _count: { select: { comments: true } }
+      },
+      orderBy: [
+        { viewCount: 'desc' },
+        { createdAt: 'desc' }
+      ]
+    });
+
+    res.status(200).json({ success: true, data: featuredNews });
+  } catch (error) {
+    console.error('Get Featured News Error:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
 export const getRelatedNews = async (req: Request, res: Response): Promise<void> => {
   try {
     const newsId = req.params.id as string;

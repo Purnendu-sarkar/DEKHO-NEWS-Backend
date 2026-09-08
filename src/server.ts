@@ -15,7 +15,7 @@ async function bootstrap() {
     console.log('✅ Database connected successfully!');
 
     // Start the server
-    app.listen(port, () => {
+    app.listen(Number(port), '0.0.0.0', () => {
       console.log(`🚀 Server is running on port ${port}`);
       
       // Initialize Cron Jobs
